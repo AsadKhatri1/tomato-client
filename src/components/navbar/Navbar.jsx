@@ -3,7 +3,7 @@ import "./Navbar.css";
 import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
 import { Link } from "react-router-dom";
-const Navbar = () => {
+const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("Home");
   const { cartItems } = useContext(StoreContext);
   const cartLength = Object.keys(cartItems).length;
@@ -47,7 +47,7 @@ const Navbar = () => {
           <img src={assets.basket_icon} alt="" />
           <div className="dot">{cartLength}</div>
         </div>
-        <button>sign in</button>
+        <button onClick={() => setShowLogin(true)}>sign in</button>
       </div>
     </div>
   );
