@@ -2,8 +2,12 @@ import React, { useContext } from "react";
 import "./Cart.css";
 import { StoreContext } from "../../context/StoreContext";
 import { assets } from "../../assets/assets";
+import { useNavigate } from "react-router-dom";
 const Cart = () => {
-  const { cartItems, removeFromCart, food_list } = useContext(StoreContext);
+  const { cartItems, removeFromCart, food_list, getTotalCartAmount } =
+    useContext(StoreContext);
+
+  const navigate = useNavigate();
   return (
     <div className="cart">
       <div className="cart-items">
@@ -21,7 +25,10 @@ const Cart = () => {
           if (cartItems[item._id] > 0) {
             return (
               <>
-                <div className="cart-items-title cart-items-item">
+                <div
+                  key={item._id}
+                  className="cart-items-title cart-items-item"
+                >
                   <img src={item.image} alt="" />
                   <p>{item.name}</p>
                   <p>${item.price}</p>
@@ -37,6 +44,45 @@ const Cart = () => {
           }
         })}
       </div>
+      {getTotalCartAmount() > 0 ? (
+        <div className="cart-bottom">
+          <div className="cart-total">
+            <h2>Cart Total</h2>
+            <div>
+              <div className="cart-total-details">
+                <p>Subtotal</p>
+                <p>${getTotalCartAmount()}</p>
+              </div>
+              <hr />
+              <div className="cart-total-details">
+                <p>Delivery</p>
+                <p>${10}</p>
+              </div>
+              <hr />
+              <div className="cart-total-details">
+                <b>Total</b>
+                <b>${getTotalCartAmount() + 10}</b>
+              </div>
+            </div>
+            <button onClick={() => navigate("/order")}>
+              PROCEED TO CHECKOUT
+            </button>
+          </div>
+          <div className="cart-promocode">
+            <div>
+              <p>if you have a promocode, enter here</p>
+              <div className="cart-promocode-input">
+                <input type="text" placeholder="Enter Promocode" />
+                <button>Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="cart-empty">
+          <h2 className="empty-text">Your cart is empty</h2>
+        </div>
+      )}
     </div>
   );
 };
