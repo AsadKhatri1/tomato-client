@@ -1,6 +1,11 @@
 .no-scroll {
   overflow: hidden;
 }
+.add-img-upload img {
+  width: 100px;
+  cursor: pointer;
+}
+
 .login-popup {
   position: absolute;
 

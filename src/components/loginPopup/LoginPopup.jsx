@@ -1,12 +1,68 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./LoginPopup.css";
 import { assets } from "../../assets/assets";
+import { StoreContext } from "../../context/StoreContext";
+import axios from "axios";
+
+import { toast } from "react-toastify";
 
 const LoginPopup = ({ setShowLogin }) => {
-  const [currentState, setCurrentState] = useState("Sign Up");
+  const { url, token, setToken } = useContext(StoreContext);
+  const [currentState, setCurrentState] = useState("Login");
+  const [image, setImage] = useState(false);
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const onChangeHandler = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    setData({ ...data, [name]: value });
+  };
+
+  const onLogin = async (event) => {
+    event.preventDefault();
+    let newUrl = url;
+    const formData = new FormData();
+    if (currentState === "Login") {
+      newUrl += "/api/user/login";
+
+      const res = await axios.post(newUrl, data);
+      if (res.data.success) {
+        setToken(res.data.token);
+        localStorage.setItem("token", res.data.token);
+        setShowLogin(false);
+
+        toast.success(res.data.message);
+      } else {
+        toast.error(res.data.message);
+      }
+    } else {
+      newUrl += "/api/user/register";
+
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+      formData.append("image", image);
+
+      const res = await axios.post(newUrl, formData);
+      if (res.data.success) {
+        setToken(res.data.token);
+        localStorage.setItem("token", res.data.token);
+        setShowLogin(false);
+        alert(res.data.message);
+      } else {
+        alert(res.data.message);
+      }
+    }
+  };
+
   return (
     <div className="login-popup">
-      <form className="login-popup-container">
+      <form className="login-popup-container" onSubmit={onLogin}>
         <div className="login-popup-title">
           <h2>{currentState}</h2>
           <img
@@ -17,21 +73,60 @@ const LoginPopup = ({ setShowLogin }) => {
         </div>
         <div className="login-popup-input">
           {currentState !== "Login" ? (
-            <input type="text" name="" id="" placeholder="Your Name" required />
+            <>
+              <div className="add-img-upload flex-col">
+                <p>Upload Avatar</p>
+                <label htmlFor="image">
+                  <img
+                    src={
+                      image ? URL.createObjectURL(image) : assets.upload_area
+                    }
+                    alt="upload"
+                  />
+                </label>
+                <input
+                  onChange={(e) => setImage(e.target.files[0])}
+                  type="file"
+                  name="image"
+                  id="image"
+                  hidden
+                  required
+                />
+              </div>
+              <input
+                onChange={onChangeHandler}
+                type="text"
+                value={data.name}
+                name="name"
+                id=""
+                placeholder="Your Name"
+                required
+              />
+            </>
           ) : (
             <></>
           )}
 
-          <input type="email" name="" id="" placeholder="Your Email" required />
           <input
+            onChange={onChangeHandler}
+            type="email"
+            name="email"
+            value={data.email}
+            id=""
+            placeholder="Your Email"
+            required
+          />
+          <input
+            onChange={onChangeHandler}
             type="password"
-            name=""
+            name="password"
+            value={data.password}
             id=""
             placeholder="Password"
             required
           />
         </div>
-        <button>
+        <button type="submit">
           {currentState === "Login" ? "Log In" : "Create Account"}
         </button>
         <div className="login-popup-condition">
