@@ -56,7 +56,7 @@ const StoreContextProvider = (props) => {
     );
     setCartItems(res.data.cartData);
   };
-  loadCartData(localStorage.getItem("token"));
+  // loadCartData(localStorage.getItem("token"));
 
   // fetching food lst
   const fetchFoodList = async () => {

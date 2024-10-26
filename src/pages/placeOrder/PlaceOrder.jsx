@@ -56,11 +56,17 @@ const PlaceOrder = () => {
 
     if (res.data.success) {
       toast.success(res.data.message);
-      navigate("/");
+      navigate("/myorders");
     } else {
       toast.error(res.data.message);
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/");
+    }
+  }, [token]);
 
   return (
     <form action="" className="place-order" onSubmit={placeOrder}>

@@ -5,6 +5,7 @@ import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const LoginPopup = ({ setShowLogin }) => {
   const { url, token, setToken } = useContext(StoreContext);
@@ -23,6 +24,7 @@ const LoginPopup = ({ setShowLogin }) => {
     setData({ ...data, [name]: value });
   };
 
+  const navigate = useNavigate();
   const onLogin = async (event) => {
     event.preventDefault();
     let newUrl = url;
@@ -35,6 +37,7 @@ const LoginPopup = ({ setShowLogin }) => {
         setToken(res.data.token);
         localStorage.setItem("token", res.data.token);
         setShowLogin(false);
+        navigate("/");
 
         toast.success(res.data.message);
       } else {
@@ -54,6 +57,7 @@ const LoginPopup = ({ setShowLogin }) => {
         localStorage.setItem("token", res.data.token);
         setShowLogin(false);
         alert(res.data.message);
+        navigate("/");
       } else {
         alert(res.data.message);
       }
