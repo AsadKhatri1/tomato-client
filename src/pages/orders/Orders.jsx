@@ -14,8 +14,9 @@ const Orders = () => {
       {},
       { headers: { token } }
     );
-    setData(res.data.data);
-    console.log(data);
+    if (res.data.success) {
+      setData(res.data.data);
+    }
   };
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const Orders = () => {
     <div className="myOrders">
       <h2>My Orders</h2>
       <div className="container">
-        {data.map((order, i) => {
+        {data?.map((order, i) => {
           return (
             <div key={i} className="my-orders-order">
               <img src={assets.parcel_icon} alt="" />
@@ -45,7 +46,7 @@ const Orders = () => {
               <p>
                 <b>{order.status}</b>
               </p>
-              <button>Track Order</button>
+              <button onClick={() => fetchOrders()}>Track Order</button>
             </div>
           );
         })}
